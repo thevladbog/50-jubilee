@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Calendar, MapPin, Info, CalendarPlus } from 'lucide-react';
+import { Calendar, MapPin, Info, CalendarPlus, Clock, Navigation, Wine } from 'lucide-react';
 
 export default function Details() {
   const [showMap, setShowMap] = useState(false);
@@ -64,9 +64,22 @@ END:VCALENDAR`;
           <div className="relative z-10 flex flex-col flex-1 w-full">
             <h3 className="font-serif text-3xl text-text mb-3">Когда</h3>
             <div className="text-text/70 text-base font-light leading-relaxed flex flex-col flex-1">
-              <p className="font-medium text-text text-xl mb-3">26 Июля 2026</p>
-              <p>Сбор гостей в 17:30</p>
-              <p>Начало в 18:00</p>
+              <div className="md:min-h-28">
+                <p className="font-medium text-text text-xl mb-3">26 Июля 2026</p>
+                <p>Сбор гостей в 17:30</p>
+                <p>Начало в 18:00</p>
+              </div>
+              <div className="mt-5 pt-5 border-t border-border/70 flex items-start gap-3 text-left">
+                <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-accent/10 text-accent">
+                  <Clock className="h-4 w-4" strokeWidth={1.7} />
+                </span>
+                <div>
+                  <p className="font-medium text-text text-sm mb-1">Неспешный сбор</p>
+                  <p className="text-sm leading-relaxed">
+                    Буду рада видеть вас к 17:30: будет время поздороваться, обняться и спокойно настроиться на вечер.
+                  </p>
+                </div>
+              </div>
               <div className="mt-auto pt-6 flex justify-center">
                 <button 
                   onClick={generateICS}
@@ -91,7 +104,22 @@ END:VCALENDAR`;
           <div className="relative z-10 flex flex-col flex-1 w-full">
             <h3 className="font-serif text-3xl text-text mb-3">Где</h3>
             <div className="text-text/70 text-base font-light leading-relaxed flex flex-col flex-1">
-              <p className="font-medium text-text text-xl mb-3">Ресторан «Дача»</p>
+              <div className="md:min-h-28">
+                <p className="font-medium text-text text-xl mb-3">Кафе «Дача»</p>
+                <p>улица Придорожная, д. 22</p>
+                <p>ст. Ленинградская</p>
+              </div>
+              <div className="mt-5 pt-5 border-t border-border/70 flex items-start gap-3 text-left">
+                <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-rose/10 text-rose">
+                  <Navigation className="h-4 w-4" strokeWidth={1.7} />
+                </span>
+                <div>
+                  <p className="font-medium text-text text-sm mb-1">Как добраться</p>
+                  <p className="text-sm leading-relaxed">
+                    Нажмите на карту, чтобы открыть маршрут до ресторана и заранее выбрать удобную дорогу.
+                  </p>
+                </div>
+              </div>
               <div className="mt-auto pt-6 flex justify-center">
                 <button 
                   onClick={() => setShowMap(!showMap)}
@@ -115,10 +143,23 @@ END:VCALENDAR`;
           <div className="relative z-10 flex flex-col flex-1 w-full">
             <h3 className="font-serif text-3xl text-text mb-3">Формат</h3>
             <div className="text-text/70 text-base font-light leading-relaxed flex flex-col flex-1">
-              <p>Летний ужин в кругу близких.</p>
-              <p>Без строгой программы —</p>
-              <p>только тепло, цветы,</p>
-              <p>радость и звон бокалов.</p>
+              <div className="md:min-h-28">
+                <p>Праздник в кругу близких.</p>
+                <p>Без строгой программы —</p>
+                <p>только тепло, цветы,</p>
+                <p>радость и звон бокалов.</p>
+              </div>
+              <div className="mt-5 pt-5 border-t border-border/70 flex items-start gap-3 text-left">
+                <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-accent/10 text-accent">
+                  <Wine className="h-4 w-4" strokeWidth={1.7} />
+                </span>
+                <div>
+                  <p className="font-medium text-text text-sm mb-1">Вечер для взрослых</p>
+                  <p className="text-sm leading-relaxed">
+                    Очень прошу вас прийти без детей: пусть этот вечер останется временем для теплого общения, отдыха и взрослого праздника.
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </motion.div>

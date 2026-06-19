@@ -6,12 +6,52 @@ import {defineConfig} from 'vite';
 export default defineConfig(() => {
   return {
     plugins: [react(), tailwindcss()],
+    build: {
+      rollupOptions: {
+        output: {
+          manualChunks(id) {
+            if (!id.includes('node_modules')) {
+              return;
+            }
+
+            if (id.includes('react') || id.includes('react-dom')) {
+              return 'react-vendor';
+            }
+
+            if (id.includes('firebase/app')) {
+              return 'firebase-app-vendor';
+            }
+
+            if (id.includes('firebase/auth')) {
+              return 'firebase-auth-vendor';
+            }
+
+            if (id.includes('firebase/firestore')) {
+              return 'firebase-firestore-vendor';
+            }
+
+            if (id.includes('motion')) {
+              return 'motion-vendor';
+            }
+
+            if (id.includes('@tailwindcss') || id.includes('tailwindcss')) {
+              return 'style-vendor';
+            }
+
+            return 'vendor';
+          },
+        },
+      },
+    },
     resolve: {
       alias: {
         '@': path.resolve(__dirname, '.'),
       },
     },
     server: {
+      proxy: {
+        '/api': 'http://127.0.0.1:3001',
+      },
       // HMR is disabled in AI Studio via DISABLE_HMR env var.
       // Do not modifyâfile watching is disabled to prevent flickering during agent edits.
       hmr: process.env.DISABLE_HMR !== 'true',

@@ -1,12 +1,13 @@
+import { lazy, Suspense, useEffect, useState } from 'react';
 import Hero from './components/Hero';
 import Details from './components/Details';
 import RSVP from './components/RSVP';
 import Footer from './components/Footer';
 import Quote from './components/Quote';
 import Countdown from './components/Countdown';
-import Admin from './components/Admin';
 import ThemeToggle from './components/ThemeToggle';
-import { useState, useEffect } from 'react';
+
+const Admin = lazy(() => import('./components/Admin'));
 
 function Decor() {
   return (
@@ -47,7 +48,11 @@ export default function App() {
   }, []);
 
   if (isAdmin) {
-    return <Admin />;
+    return (
+      <Suspense fallback={<div className="min-h-screen bg-bg-alt flex items-center justify-center text-text font-sans">Загрузка...</div>}>
+        <Admin />
+      </Suspense>
+    );
   }
 
   return (

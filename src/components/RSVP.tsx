@@ -1,27 +1,13 @@
-import { useState, useEffect } from 'react';
+import { useState, type FormEvent } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { initAnonymousAuth, db } from '../lib/auth';
-import { collection, addDoc } from 'firebase/firestore';
+import { submitRsvp } from '../lib/rsvpApi';
 
 export default function RSVP() {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [authReady, setAuthReady] = useState(false);
 
-  useEffect(() => {
-    const unsubscribe = initAnonymousAuth(
-      () => setAuthReady(true),
-      (err) => console.error("Firebase auth err:", err)
-    );
-    return () => unsubscribe();
-  }, []);
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!authReady) {
-      alert("Соединение устанавливается, попробуйте через пару секунд...");
-      return;
-    }
     
     setLoading(true);
     
@@ -30,15 +16,8 @@ export default function RSVP() {
       const name = formData.get('name') as string;
       const attendance = formData.get('attendance') === 'yes' ? 'Будет' : 'Не сможет';
       const wishes = formData.get('wishes') as string;
-      const date = new Date().toLocaleString('ru-RU');
 
-      await addDoc(collection(db, 'rsvps'), {
-        name,
-        attendance,
-        wishes,
-        date,
-        createdAt: new Date().toISOString()
-      });
+      await submitRsvp({ name, attendance, wishes });
 
       setSubmitted(true);
     } catch (error) {

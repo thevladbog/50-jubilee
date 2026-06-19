@@ -2,7 +2,12 @@ import { Moon, Sun } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
 
-export default function ThemeToggle() {
+type ThemeToggleProps = {
+  className?: string;
+  fixed?: boolean;
+};
+
+export default function ThemeToggle({ className = '', fixed = true }: ThemeToggleProps) {
   const [isDark, setIsDark] = useState(false);
 
   useEffect(() => {
@@ -28,7 +33,7 @@ export default function ThemeToggle() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 1 }}
       onClick={toggleTheme}
-      className="fixed top-6 right-6 md:top-10 md:right-10 z-50 p-3 rounded-full bg-surface/80 backdrop-blur-md border border-border shadow-sm text-text/80 hover:text-accent hover:border-accent transition-colors"
+      className={`${fixed ? 'fixed top-6 right-6 md:top-10 md:right-10' : ''} z-50 p-3 rounded-full bg-surface/80 backdrop-blur-md border border-border shadow-sm text-text/80 hover:text-accent hover:border-accent transition-colors ${className}`}
       aria-label="Toggle theme"
     >
       {isDark ? <Sun size={20} strokeWidth={1.5} /> : <Moon size={20} strokeWidth={1.5} />}
