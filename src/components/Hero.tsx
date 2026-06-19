@@ -90,53 +90,73 @@ export default function Hero() {
           </h1>
         </div>
         
-        <div className="flex flex-col md:flex-row items-center justify-center gap-4 text-accent/80 italic font-serif mt-12 md:mt-16 relative z-10">
-          <div className="flex items-center justify-center gap-4 text-3xl md:text-5xl relative cursor-default">
-            <span className="relative text-text/50 inline-block px-1">
+        <div className="flex flex-col md:flex-row items-center justify-center gap-5 md:gap-6 text-accent/80 italic font-serif mt-7 md:mt-12 relative z-10">
+          <div className="flex items-center justify-center gap-5 md:gap-7 text-5xl md:text-7xl lg:text-8xl relative cursor-default">
+            <span className="relative inline-block px-1 text-6xl text-text/50 md:text-8xl lg:text-9xl">
               50
               <motion.svg
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.2, delay: 0.8 }}
-                className="absolute top-1/2 left-[-15%] w-[130%] h-[1.5em] -translate-y-1/2 text-rose pointer-events-none origin-left"
-                viewBox="0 0 100 40"
+                className="absolute top-[63%] left-[-4%] w-[108%] h-[1.08em] -translate-y-1/2 text-rose pointer-events-none origin-left"
+                viewBox="0 0 100 60"
                 preserveAspectRatio="none"
               >
                 <motion.path
                   initial={{ pathLength: 0 }}
                   animate={{ pathLength: 1 }}
                   transition={{ duration: 0.8, delay: 0.8, ease: "easeInOut" }}
-                  d="M 10,5 Q 50,18 90,35 M 10,35 Q 50,22 90,5"
+                  d="M 17,10 C 34,23 54,36 83,52"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.4"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <motion.path
+                  initial={{ pathLength: 0 }}
+                  animate={{ pathLength: 1 }}
+                  transition={{ duration: 0.65, delay: 1, ease: "easeInOut" }}
+                  d="M 19,50 C 38,37 58,24 81,9"
                   fill="none"
                   stroke="currentColor"
                   strokeWidth="2"
                   strokeLinecap="round"
                   strokeLinejoin="round"
+                  opacity="0.8"
                 />
               </motion.svg>
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1.5 }}
+                className="absolute -left-3 top-0 text-rose/25 text-7xl md:text-9xl lg:text-[10rem] -z-10 blur-[2px]"
+              >
+                50
+              </motion.div>
               <motion.span 
                 initial={{ opacity: 0, scale: 0, rotate: -20 }}
                 animate={{ opacity: 1, scale: 1, rotate: -12 }}
                 transition={{ delay: 1.4, type: "spring" }}
-                className="absolute -top-8 -right-8 text-sm md:text-base font-sans not-italic text-rose bg-bg-alt px-3 py-1 rounded-full border border-rose/20 shadow-sm whitespace-nowrap z-10"
+                className="absolute -top-4 -right-10 text-xs md:-top-2 md:-right-12 md:text-base font-sans not-italic text-rose bg-bg-alt px-3 py-1 rounded-full border border-rose/20 shadow-sm whitespace-nowrap z-10"
               >
                 Ой, нет
               </motion.span>
             </span>
-            <div className="w-8 md:w-16 h-[1px] bg-accent/50" />
-            <span className="text-5xl md:text-7xl text-text font-medium relative">
+            <div className="w-10 md:w-20 lg:w-24 h-px bg-accent/50" />
+            <span className="text-7xl md:text-8xl lg:text-9xl text-text font-medium relative">
               18
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 1.5 }}
-                className="absolute -right-6 top-0 text-accent/30 text-8xl -z-10 blur-[2px]"
+                className="absolute -right-7 top-0 text-accent/25 text-8xl md:-right-9 md:text-9xl lg:text-[10rem] -z-10 blur-[2px]"
               >
                 18
               </motion.div>
             </span>
           </div>
-          <span className="text-xl md:text-2xl font-serif not-italic text-text/60 mt-2 md:mt-0">
+          <span className="text-xl md:text-2xl lg:text-3xl font-serif not-italic text-text/60 mt-1 md:mt-0">
             и 32 года опыта
           </span>
         </div>
