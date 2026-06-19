@@ -7,6 +7,7 @@ import Quote from './components/Quote';
 import Countdown from './components/Countdown';
 import ThemeToggle from './components/ThemeToggle';
 import ConfettiButton from './components/ConfettiButton';
+import { Calendar, MapPin, Send } from 'lucide-react';
 
 const Admin = lazy(() => import('./components/Admin'));
 
@@ -29,6 +30,56 @@ function Decor() {
       </div>
 
     </div>
+  );
+}
+
+function AnchorNav() {
+  const links = [
+    { href: '#when', label: 'Когда', icon: Calendar },
+    { href: '#where', label: 'Где', icon: MapPin },
+    { href: '#rsvp', label: 'Ответить', icon: Send },
+  ];
+
+  return (
+    <nav className="fixed left-4 top-6 z-40 flex min-h-12 max-w-[calc(100vw-5.75rem)] items-center overflow-x-auto rounded-full border border-border/80 bg-surface/80 p-1 shadow-sm backdrop-blur-md md:left-1/2 md:right-auto md:top-8 md:w-[calc(100vw-2rem)] md:max-w-max md:-translate-x-1/2">
+      <div className="flex w-max items-center gap-1">
+        {links.map(({ href, label, icon: Icon }) => (
+          <a
+            key={href}
+            href={href}
+            className="inline-flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full px-3 py-2 text-xs font-medium text-text/70 transition-colors hover:bg-accent/10 hover:text-accent sm:gap-2 sm:px-4 sm:text-sm"
+          >
+            <Icon size={16} strokeWidth={1.6} />
+            <span>{label}</span>
+          </a>
+        ))}
+      </div>
+    </nav>
+  );
+}
+
+function HeaderBlur() {
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 12);
+    };
+
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
+
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  return (
+    <div
+      className={`pointer-events-none fixed inset-x-0 top-0 z-30 h-24 transition-all duration-500 md:h-28 ${
+        isScrolled
+          ? 'bg-gradient-to-b from-bg/55 via-bg/35 to-bg/0 opacity-100 backdrop-blur-2xl'
+          : 'bg-bg/0 opacity-0 backdrop-blur-none'
+      }`}
+    />
   );
 }
 
@@ -57,13 +108,15 @@ export default function App() {
   }
 
   return (
-    <div className="relative min-h-screen bg-bg text-text selection:bg-accent selection:text-white font-sans transition-colors duration-500">
+    <div className="relative min-h-screen scroll-smooth bg-bg text-text selection:bg-accent selection:text-white font-sans transition-colors duration-500">
       <div className="fixed inset-0 bg-noise z-50 pointer-events-none" />
       <div className="fixed inset-0 bg-bg transition-colors duration-500 -z-10" />
       <Decor />
       
+      <HeaderBlur />
       <ThemeToggle />
       <ConfettiButton />
+      <AnchorNav />
       
       <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-8 md:px-16 py-8 md:py-20 flex flex-col gap-16 md:gap-32">
         <Hero />

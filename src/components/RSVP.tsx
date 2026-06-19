@@ -30,11 +30,12 @@ export default function RSVP() {
 
   return (
     <motion.section 
+      id="rsvp"
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-100px" }}
       transition={{ duration: 0.8 }}
-      className="bg-surface/80 backdrop-blur-xl p-8 md:p-16 rounded-[3rem] border border-border/80 shadow-[0_30px_100px_-20px_rgba(225,122,136,0.15)] text-center relative overflow-hidden mt-8"
+      className="scroll-mt-32 bg-surface/80 backdrop-blur-xl p-8 md:p-16 rounded-[3rem] border border-border/80 shadow-[0_30px_100px_-20px_rgba(225,122,136,0.15)] text-center relative overflow-hidden mt-8"
     >
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-accent/10 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/3 pointer-events-none" />
       <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-leaf/10 rounded-full blur-[80px] translate-y-1/3 -translate-x-1/3 pointer-events-none" />

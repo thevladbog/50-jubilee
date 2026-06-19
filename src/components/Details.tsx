@@ -54,7 +54,7 @@ END:VCALENDAR`;
         className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-10 text-center"
       >
         {/* Когда */}
-        <motion.div variants={item} className="flex flex-col items-center p-8 md:p-10 bg-surface/80 backdrop-blur-md rounded-[2.5rem] border border-border/80 shadow-[0_20px_60px_-15px_rgba(225,122,136,0.1)] relative overflow-hidden group">
+        <motion.div id="when" variants={item} className="scroll-mt-32 flex flex-col items-center p-8 md:p-10 bg-surface/80 backdrop-blur-md rounded-[2.5rem] border border-border/80 shadow-[0_20px_60px_-15px_rgba(225,122,136,0.1)] relative overflow-hidden group">
           <div className="absolute -top-8 -right-8 text-accent/5 scale-150 group-hover:scale-110 group-hover:rotate-12 transition-transform duration-700 ease-out pointer-events-none">
             <Calendar size={250} strokeWidth={0.5} />
           </div>
@@ -94,7 +94,7 @@ END:VCALENDAR`;
         </motion.div>
 
         {/* Где */}
-        <motion.div variants={item} className="flex flex-col items-center p-8 md:p-10 bg-surface/80 backdrop-blur-md rounded-[2.5rem] border border-border/80 shadow-[0_20px_60px_-15px_rgba(225,122,136,0.1)] relative overflow-hidden group">
+        <motion.div id="where" variants={item} className="scroll-mt-32 flex flex-col items-center p-8 md:p-10 bg-surface/80 backdrop-blur-md rounded-[2.5rem] border border-border/80 shadow-[0_20px_60px_-15px_rgba(225,122,136,0.1)] relative overflow-hidden group">
           <div className="absolute -top-8 -right-8 text-rose/5 scale-150 group-hover:scale-110 group-hover:rotate-12 transition-transform duration-700 ease-out pointer-events-none">
             <MapPin size={250} strokeWidth={0.5} />
           </div>
