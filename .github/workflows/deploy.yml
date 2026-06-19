@@ -48,6 +48,7 @@ jobs:
             'DOMAIN=${{ secrets.DOMAIN }}' \
             'ACME_EMAIL=${{ secrets.ACME_EMAIL }}' \
             'ADMIN_SECRET=${{ secrets.ADMIN_SECRET }}' \
+            'PRESENTER_SECRET=${{ secrets.PRESENTER_SECRET }}' \
             > .deploy/.env
           printf '%s' '${{ secrets.YC_SA_JSON_CREDENTIALS }}' > .deploy/yc-key.json
 

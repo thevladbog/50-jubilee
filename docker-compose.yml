@@ -26,6 +26,7 @@ services:
     restart: unless-stopped
     environment:
       ADMIN_SECRET: ${ADMIN_SECRET}
+      PRESENTER_SECRET: ${PRESENTER_SECRET:-ЯВедущий}
       SQLITE_PATH: /data/rsvps.sqlite
       PORT: 3000
     volumes:

@@ -1,9 +1,11 @@
 import { useState, type FormEvent } from 'react';
-import { ArrowLeft, Download, Filter, Search } from 'lucide-react';
+import { AlertTriangle, ArrowLeft, Download, Filter, Search, Trash2, X } from 'lucide-react';
 import {
+  deleteAdminRsvp,
   fetchAdminRsvps,
   updateAdminRsvpAttendance,
   updateAdminRsvpReadingStatus,
+  type AdminRole,
   type ReadingStatus,
   type RsvpRecord,
 } from '../lib/rsvpApi';
@@ -84,8 +86,11 @@ export default function Admin() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [updatingRsvpId, setUpdatingRsvpId] = useState<number | null>(null);
   const [updatingReadingStatusId, setUpdatingReadingStatusId] = useState<number | null>(null);
+  const [deletingRsvpId, setDeletingRsvpId] = useState<number | null>(null);
+  const [rsvpToDelete, setRsvpToDelete] = useState<RsvpRecord | null>(null);
   
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [adminRole, setAdminRole] = useState<AdminRole | null>(null);
   const [password, setPassword] = useState('');
   const [adminSecret, setAdminSecret] = useState('');
   const [authError, setAuthError] = useState(false);
@@ -96,7 +101,8 @@ export default function Admin() {
 
     try {
       const data = await fetchAdminRsvps(password);
-      setRsvps(data);
+      setRsvps(data.rsvps);
+      setAdminRole(data.role);
       setIsAuthenticated(true);
       setAdminSecret(password);
       setAuthError(false);
@@ -105,6 +111,7 @@ export default function Admin() {
       console.error('Admin fetch error:', error);
       setAuthError(true);
       setIsAuthenticated(false);
+      setAdminRole(null);
     } finally {
       setIsSubmitting(false);
     }
@@ -178,6 +185,25 @@ export default function Admin() {
     URL.revokeObjectURL(url);
   };
 
+  const handleDeleteRsvp = async () => {
+    if (!rsvpToDelete) {
+      return;
+    }
+
+    setDeletingRsvpId(rsvpToDelete.id);
+
+    try {
+      await deleteAdminRsvp(adminSecret, rsvpToDelete.id);
+      setRsvps((currentRsvps) => currentRsvps.filter((currentRsvp) => currentRsvp.id !== rsvpToDelete.id));
+      setRsvpToDelete(null);
+    } catch (error) {
+      console.error('RSVP delete error:', error);
+      alert('Не удалось удалить ответ. Пожалуйста, попробуйте еще раз.');
+    } finally {
+      setDeletingRsvpId(null);
+    }
+  };
+
   const filteredRsvps = rsvps.filter(rsvp => {
     const matchesSearch = rsvp.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
                           (rsvp.wishes && rsvp.wishes.toLowerCase().includes(searchTerm.toLowerCase()));
@@ -188,6 +214,7 @@ export default function Admin() {
   const totalCount = rsvps.length;
   const attendingCount = rsvps.filter((rsvp) => rsvp.attendance === 'Будет').length;
   const declinedCount = rsvps.filter((rsvp) => rsvp.attendance === 'Не сможет').length;
+  const canManageRsvps = adminRole === 'admin';
 
   if (!isAuthenticated) {
     return (
@@ -329,7 +356,9 @@ export default function Admin() {
                     <th className="min-w-[340px] p-4 font-medium">Пожелание</th>
                     <th className="min-w-[170px] p-4 font-medium">Дата отправки</th>
                     <th className="min-w-[130px] p-4 font-medium">Статус</th>
-                    <th className="min-w-[210px] p-4 pr-6 font-medium text-right">Действие</th>
+                    {canManageRsvps && (
+                      <th className="min-w-[270px] p-4 pr-6 font-medium text-right">Действие</th>
+                    )}
                   </tr>
                 </thead>
                 <tbody>
@@ -369,26 +398,44 @@ export default function Admin() {
                               {rsvp.attendance}
                             </span>
                           </td>
-                          <td className="p-4 pr-6 text-right">
-                            <button
-                              type="button"
-                              onClick={() => handleToggleAttendance(rsvp)}
-                              disabled={updatingRsvpId === rsvp.id}
-                              className="inline-flex min-w-[170px] items-center justify-center whitespace-nowrap rounded-xl border border-border bg-surface px-4 py-2 text-sm font-medium text-text/80 transition-all hover:border-accent/40 hover:bg-accent/5 hover:text-text disabled:cursor-wait disabled:opacity-60"
-                            >
-                              {updatingRsvpId === rsvp.id
-                                ? 'Сохраняю...'
-                                : rsvp.attendance === 'Будет'
-                                  ? 'Отметить «Не сможет»'
-                                  : 'Отметить «Будет»'}
-                            </button>
-                          </td>
+                          {canManageRsvps && (
+                            <td className="p-4 pr-6 text-right">
+                              <div className="flex items-center justify-end gap-2">
+                                <button
+                                  type="button"
+                                  onClick={() => handleToggleAttendance(rsvp)}
+                                  disabled={updatingRsvpId === rsvp.id}
+                                  className="inline-flex min-w-[170px] items-center justify-center whitespace-nowrap rounded-xl border border-border bg-surface px-4 py-2 text-sm font-medium text-text/80 transition-all hover:border-accent/40 hover:bg-accent/5 hover:text-text disabled:cursor-wait disabled:opacity-60"
+                                >
+                                  {updatingRsvpId === rsvp.id
+                                    ? 'Сохраняю...'
+                                    : rsvp.attendance === 'Будет'
+                                      ? 'Отметить «Не сможет»'
+                                      : 'Отметить «Будет»'}
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => setRsvpToDelete(rsvp)}
+                                  disabled={deletingRsvpId === rsvp.id}
+                                  className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-rose/20 bg-rose/5 text-rose transition-all hover:border-rose/40 hover:bg-rose/10 disabled:cursor-wait disabled:opacity-60"
+                                  aria-label={`Удалить ответ гостя ${rsvp.name}`}
+                                  title="Удалить ответ"
+                                >
+                                  {deletingRsvpId === rsvp.id ? (
+                                    <span className="h-4 w-4 rounded-full border-2 border-rose/30 border-t-rose animate-spin" />
+                                  ) : (
+                                    <Trash2 size={16} strokeWidth={1.7} />
+                                  )}
+                                </button>
+                              </div>
+                            </td>
+                          )}
                         </tr>
                       );
                     })
                   ) : (
                     <tr>
-                      <td colSpan={5} className="p-10 text-center text-text/50">
+                      <td colSpan={canManageRsvps ? 5 : 4} className="p-10 text-center text-text/50">
                         {rsvps.length === 0 ? 'Пока нет ответов.' : 'Ответов, удовлетворяющих фильтрам, не найдено.'}
                       </td>
                     </tr>
@@ -399,6 +446,82 @@ export default function Admin() {
           </div>
         </div>
       </div>
+      {canManageRsvps && rsvpToDelete && (
+        <div className="fixed inset-0 z-[70] flex items-center justify-center bg-text/25 px-4 py-6 backdrop-blur-md">
+          <div
+            className="absolute inset-0"
+            onClick={() => {
+              if (deletingRsvpId === null) {
+                setRsvpToDelete(null);
+              }
+            }}
+          />
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="delete-rsvp-title"
+            className="relative w-full max-w-md overflow-hidden rounded-3xl border border-border/80 bg-surface/95 p-6 text-text shadow-[0_30px_100px_-20px_rgba(225,122,136,0.35)] backdrop-blur-xl md:p-8"
+          >
+            <button
+              type="button"
+              onClick={() => setRsvpToDelete(null)}
+              disabled={deletingRsvpId !== null}
+              className="absolute right-4 top-4 inline-flex h-10 w-10 items-center justify-center rounded-full border border-border bg-surface/80 text-text/50 transition-colors hover:border-rose/30 hover:text-rose disabled:cursor-wait disabled:opacity-50"
+              aria-label="Закрыть окно удаления"
+            >
+              <X size={18} strokeWidth={1.7} />
+            </button>
+
+            <div className="mb-5 inline-flex h-14 w-14 items-center justify-center rounded-2xl border border-rose/20 bg-rose/10 text-rose">
+              <AlertTriangle size={24} strokeWidth={1.6} />
+            </div>
+            <h2 id="delete-rsvp-title" className="pr-10 font-serif text-3xl text-text">
+              Удалить ответ?
+            </h2>
+            <p className="mt-3 text-sm leading-relaxed text-text/60">
+              Ответ гостя <span className="font-medium text-text">«{rsvpToDelete.name}»</span> будет удален из таблицы и базы. Это действие нельзя отменить.
+            </p>
+
+            {rsvpToDelete.wishes && (
+              <div className="mt-5 rounded-2xl border border-border/70 bg-bg-alt/60 p-4">
+                <p className="mb-2 text-xs uppercase tracking-[0.18em] text-text/40">Пожелание</p>
+                <p className="line-clamp-4 whitespace-pre-wrap text-sm leading-relaxed text-text/70">
+                  {rsvpToDelete.wishes}
+                </p>
+              </div>
+            )}
+
+            <div className="mt-7 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+              <button
+                type="button"
+                onClick={() => setRsvpToDelete(null)}
+                disabled={deletingRsvpId !== null}
+                className="inline-flex items-center justify-center rounded-2xl border border-border bg-surface px-5 py-3 text-sm font-medium text-text/70 transition-all hover:border-accent/40 hover:text-text disabled:cursor-wait disabled:opacity-50"
+              >
+                Оставить
+              </button>
+              <button
+                type="button"
+                onClick={handleDeleteRsvp}
+                disabled={deletingRsvpId !== null}
+                className="inline-flex items-center justify-center gap-2 rounded-2xl border border-rose/20 bg-rose px-5 py-3 text-sm font-medium text-white shadow-sm transition-all hover:bg-rose-dark disabled:cursor-wait disabled:opacity-70"
+              >
+                {deletingRsvpId !== null ? (
+                  <>
+                    <span className="h-4 w-4 rounded-full border-2 border-white/40 border-t-white animate-spin" />
+                    Удаляю...
+                  </>
+                ) : (
+                  <>
+                    <Trash2 size={16} strokeWidth={1.8} />
+                    Удалить
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }

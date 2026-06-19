@@ -1,4 +1,5 @@
 export type ReadingStatus = 'Не прочитано' | 'Готовится' | 'Прочитано';
+export type AdminRole = 'admin' | 'presenter';
 
 export interface RsvpRecord {
   id: number;
@@ -8,6 +9,11 @@ export interface RsvpRecord {
   wishes: string;
   date: string;
   createdAt: string;
+}
+
+export interface AdminRsvpsResponse {
+  role: AdminRole;
+  rsvps: RsvpRecord[];
 }
 
 interface RsvpInput {
@@ -45,7 +51,7 @@ export async function submitRsvp(payload: RsvpInput): Promise<RsvpRecord> {
   return response.json() as Promise<RsvpRecord>;
 }
 
-export async function fetchAdminRsvps(secret: string): Promise<RsvpRecord[]> {
+export async function fetchAdminRsvps(secret: string): Promise<AdminRsvpsResponse> {
   const response = await fetch('/api/admin/rsvps', {
     method: 'POST',
     headers: {
@@ -58,7 +64,16 @@ export async function fetchAdminRsvps(secret: string): Promise<RsvpRecord[]> {
     throw new Error(await readErrorMessage(response));
   }
 
-  return response.json() as Promise<RsvpRecord[]>;
+  const data = await response.json();
+
+  if (Array.isArray(data)) {
+    return {
+      role: secret === 'ЯВедущий' ? 'presenter' : 'admin',
+      rsvps: data as RsvpRecord[],
+    };
+  }
+
+  return data as AdminRsvpsResponse;
 }
 
 export async function updateAdminRsvpAttendance(
@@ -99,4 +114,18 @@ export async function updateAdminRsvpReadingStatus(
   }
 
   return response.json() as Promise<RsvpRecord>;
+}
+
+export async function deleteAdminRsvp(secret: string, id: number): Promise<void> {
+  const response = await fetch('/api/admin/rsvps', {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ secret, id }),
+  });
+
+  if (!response.ok) {
+    throw new Error(await readErrorMessage(response));
+  }
 }

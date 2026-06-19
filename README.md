@@ -36,6 +36,7 @@ The app is a Vite + React frontend with a small Node API. Production uses a loca
 
    ```env
    ADMIN_SECRET="change-me"
+   PRESENTER_SECRET="ЯВедущий"
    SQLITE_PATH="data/rsvps.sqlite"
    ```
 
@@ -58,7 +59,7 @@ npm run build:all
 Run locally:
 
 ```bash
-ADMIN_SECRET="change-me" SQLITE_PATH="data/rsvps.sqlite" npm start
+ADMIN_SECRET="change-me" PRESENTER_SECRET="ЯВедущий" SQLITE_PATH="data/rsvps.sqlite" npm start
 ```
 
 The server listens on `PORT` or `3000` by default and serves:
@@ -81,6 +82,7 @@ Run it:
 docker run --rm \
   -p 3000:3000 \
   -e ADMIN_SECRET="change-me" \
+  -e PRESENTER_SECRET="ЯВедущий" \
   -e SQLITE_PATH="/data/rsvps.sqlite" \
   -v jubilee-data:/data \
   50-jubilee:local
@@ -95,6 +97,7 @@ APP_IMAGE=cr.yandex/<registry-id>/50-jubilee:latest
 DOMAIN=example.com
 ACME_EMAIL=admin@example.com
 ADMIN_SECRET=change-me
+PRESENTER_SECRET=ЯВедущий
 ```
 
 Start or update:
@@ -128,6 +131,7 @@ Required GitHub secrets:
 - `DOMAIN`
 - `ACME_EMAIL`
 - `ADMIN_SECRET`
+- `PRESENTER_SECRET` (optional; defaults to `ЯВедущий`)
 
 ## Useful Server Commands
 

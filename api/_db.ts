@@ -107,6 +107,14 @@ export function updateRsvpReadingStatus(id: number, readingStatus: ReadingStatus
   return getRsvpById(id);
 }
 
+export function deleteRsvp(id: number) {
+  ensureRsvpSchema();
+
+  const result = db.prepare('DELETE FROM rsvps WHERE id = ?').run(id);
+
+  return result.changes > 0;
+}
+
 export function mapRsvpRow(row: RsvpRow): RsvpRecord {
   const createdAt = new Date(row.created_at).toISOString();
 
