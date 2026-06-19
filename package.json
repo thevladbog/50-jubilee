@@ -1,14 +1,17 @@
 {
-  "name": "react-example",
+  "name": "50-jubilee",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
+  "engines": {
+    "node": ">=24 <25"
+  },
   "scripts": {
     "dev": "node scripts/dev.mjs",
     "dev:client": "vite --port=3000 --host=0.0.0.0",
     "dev:api": "tsx api/dev-server.ts",
     "build": "vite build",
-    "build:server": "esbuild server.ts --bundle --platform=node --target=node22 --format=esm --outfile=dist/server.js",
+    "build:server": "esbuild server.ts --bundle --platform=node --target=node24 --format=esm --outfile=dist/server.js",
     "build:all": "npm run build && npm run build:server",
     "start": "node --no-warnings dist/server.js",
     "preview": "vite preview",
