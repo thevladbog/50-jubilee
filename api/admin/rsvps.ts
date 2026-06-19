@@ -1,5 +1,10 @@
-import type { RsvpRow } from '../_db';
-import { ensureRsvpSchema, mapRsvpRow, sql } from '../_db';
+import {
+  ensureRsvpSchema,
+  listRsvps,
+  mapRsvpRow,
+  updateRsvpAttendance,
+  updateRsvpReadingStatus,
+} from '../_db';
 
 export const config = {
   runtime: 'edge',
@@ -51,14 +56,7 @@ export default async function handler(request: Request) {
         return Response.json({ error: 'Invalid reading status value' }, { status: 400 });
       }
 
-      const rows = await sql`
-        UPDATE rsvps
-        SET reading_status = ${readingStatus}
-        WHERE id = ${id}
-        RETURNING id, name, attendance, reading_status, wishes, created_at
-      `;
-
-      const [row] = rows as RsvpRow[];
+      const row = updateRsvpReadingStatus(id, readingStatus);
 
       if (!row) {
         return Response.json({ error: 'RSVP not found' }, { status: 404 });
@@ -71,14 +69,7 @@ export default async function handler(request: Request) {
       return Response.json({ error: 'Invalid attendance value' }, { status: 400 });
     }
 
-    const rows = await sql`
-      UPDATE rsvps
-      SET attendance = ${attendance}
-      WHERE id = ${id}
-      RETURNING id, name, attendance, reading_status, wishes, created_at
-    `;
-
-    const [row] = rows as RsvpRow[];
+    const row = updateRsvpAttendance(id, attendance);
 
     if (!row) {
       return Response.json({ error: 'RSVP not found' }, { status: 404 });
@@ -87,11 +78,5 @@ export default async function handler(request: Request) {
     return Response.json(mapRsvpRow(row));
   }
 
-  const rows = await sql`
-    SELECT id, name, attendance, reading_status, wishes, created_at
-    FROM rsvps
-    ORDER BY created_at DESC
-  `;
-
-  return Response.json((rows as RsvpRow[]).map(mapRsvpRow));
+  return Response.json(listRsvps().map(mapRsvpRow));
 }

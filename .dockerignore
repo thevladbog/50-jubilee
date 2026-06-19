@@ -1,0 +1,12 @@
+node_modules
+dist
+data
+.git
+.gigacode
+.env
+.env.*
+!.env.example
+npm-debug.log
+Dockerfile
+docker-compose.yml
+README.md

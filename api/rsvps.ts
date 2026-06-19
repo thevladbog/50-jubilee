@@ -1,5 +1,4 @@
-import type { RsvpRow } from './_db';
-import { ensureRsvpSchema, mapRsvpRow, sql } from './_db';
+import { createRsvp, ensureRsvpSchema, mapRsvpRow } from './_db';
 
 export const config = {
   runtime: 'edge',
@@ -41,13 +40,7 @@ export default async function handler(request: Request) {
     return Response.json({ error: 'Missing required fields' }, { status: 400 });
   }
 
-  const rows = await sql`
-    INSERT INTO rsvps (name, attendance, wishes)
-    VALUES (${name}, ${attendanceValue}, ${wishes})
-    RETURNING id, name, attendance, reading_status, wishes, created_at
-  `;
-
-  const [row] = rows as RsvpRow[];
+  const row = createRsvp({ name, attendance: attendanceValue, wishes });
 
   return Response.json(mapRsvpRow(row), { status: 201 });
 }

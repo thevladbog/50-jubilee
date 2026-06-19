@@ -1,28 +1,70 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
-</div>
+# Inna Jubilee RSVP
 
-# RSVP app
+Vite + React invitation app with a small Node API and a local SQLite database.
 
-This project is a Vite + React app with a Neon-backed RSVP API designed to deploy on Vercel.
-
-## Local development
-
-**Prerequisites:** Node.js and a Neon database.
+## Local Development
 
 1. Install dependencies:
    `npm install`
-2. Set `DATABASE_URL` and `ADMIN_SECRET` in [.env.local](.env.local)
-3. Start a Vercel dev server so the `/api` routes are available:
-   `npx vercel dev`
-4. In a separate terminal, or if you only need the frontend shell, you can still run:
+2. Copy env example:
+   `cp .env.example .env.local`
+3. Set `ADMIN_SECRET` in `.env.local`.
+4. Start frontend and API:
    `npm run dev`
 
-## Environment variables
+Local SQLite data is stored in `data/rsvps.sqlite` unless `SQLITE_PATH` is set.
 
-- `DATABASE_URL` - Neon connection string for the Postgres database
-- `ADMIN_SECRET` - Secret used by the admin page and the `/api/admin/rsvps` endpoint
+## Production Build
 
-## Deployment
+Build frontend and the bundled Node server:
 
-Deploy the project to Vercel and configure the same environment variables in the Vercel project settings.
+```bash
+npm run build:all
+npm start
+```
+
+The production server listens on `PORT` and serves:
+
+- static files from `dist`
+- `/api/rsvps`
+- `/api/admin/rsvps`
+
+## Docker Compose Deployment
+
+The compose stack runs:
+
+- `app` - the invitation app and API
+- `traefik` - HTTPS reverse proxy with Let's Encrypt
+- `rsvp_data` volume - persistent SQLite database at `/data/rsvps.sqlite`
+
+Create a `.env` file on the server:
+
+```env
+APP_IMAGE=cr.yandex/<registry-id>/50-jubilee:latest
+DOMAIN=example.com
+ACME_EMAIL=admin@example.com
+ADMIN_SECRET=change-me
+```
+
+Then run:
+
+```bash
+docker compose pull
+docker compose up -d
+```
+
+## GitHub Actions Deployment
+
+`.github/workflows/deploy.yml` builds the image, pushes it to Yandex Container Registry, copies `docker-compose.yml` to the server, and restarts the stack.
+
+Required GitHub secrets:
+
+- `YC_REGISTRY_ID` - Yandex Container Registry id
+- `YC_SA_JSON_CREDENTIALS` - service account JSON key with push/pull access
+- `SERVER_HOST` - deployment server hostname or IP
+- `SERVER_USER` - SSH user
+- `SSH_PRIVATE_KEY` - private SSH key for the server
+- `DEPLOY_PATH` - directory on the server for compose files
+- `DOMAIN` - public domain for Traefik routing
+- `ACME_EMAIL` - Let's Encrypt email
+- `ADMIN_SECRET` - admin password
