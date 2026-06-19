@@ -1,0 +1,65 @@
+@import "tailwindcss";
+
+@variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-serif: "Cormorant Garamond", ui-serif, Georgia, serif;
+  --font-sans: "Montserrat", ui-sans-serif, system-ui, sans-serif;
+  
+  --color-accent: var(--color-accent);
+  --color-accent-dark: var(--color-accent-dark);
+  --color-rose: var(--color-rose);
+  --color-rose-dark: var(--color-rose-dark);
+  --color-bg: var(--color-bg);
+  --color-bg-alt: var(--color-bg-alt);
+  --color-text: var(--color-text);
+  --color-leaf: var(--color-leaf);
+  --color-surface: var(--color-surface);
+  --color-surface-hover: var(--color-surface-hover);
+  --color-border: var(--color-border);
+}
+
+:root {
+  --color-accent: #D4AF37; /* Noble gold */
+  --color-accent-dark: #B5952F;
+  --color-rose: #E17A88;
+  --color-rose-dark: #C66270;
+  --color-bg: #FCFBF9; 
+  --color-bg-alt: #FFF5F6; 
+  --color-text: #3A3532;
+  --color-leaf: #9BB8A1;
+  --color-surface: #FFFFFF;
+  --color-surface-hover: #F8F8F8;
+  --color-border: #E8E2D9;
+}
+
+.dark {
+  --color-accent: #D4AF37; 
+  --color-accent-dark: #F3E0A9;
+  --color-rose: #E17A88;
+  --color-rose-dark: #F0A5B0;
+  --color-bg: #1C1918; 
+  --color-bg-alt: #2B2321; 
+  --color-text: #EBE5E0;
+  --color-leaf: #799580;
+  --color-surface: #262221;
+  --color-surface-hover: #332D2B;
+  --color-border: #3A3532;
+}
+
+body {
+  @apply bg-bg text-text font-sans antialiased overflow-x-hidden transition-colors duration-500;
+}
+
+.bg-noise {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.08'/%3E%3C/svg%3E");
+  opacity: 1;
+  pointer-events: none;
+}
+:root .bg-noise {
+  mix-blend-mode: multiply;
+}
+.dark .bg-noise {
+  mix-blend-mode: overlay;
+  opacity: 0.15;
+}

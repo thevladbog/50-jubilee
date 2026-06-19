@@ -1,0 +1,6 @@
+{
+  "name": "Приглашение на Юбилей",
+  "description": "Современный лендинг-пригласительное на 50-летие",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
