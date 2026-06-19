@@ -32,9 +32,11 @@ services:
       - rsvp_data:/data
     labels:
       - traefik.enable=true
-      - traefik.http.routers.jubilee.rule=Host(`${DOMAIN}`)
+      - traefik.http.routers.jubilee.rule=Host(`${DOMAIN}`) || Host(`www.${DOMAIN}`)
       - traefik.http.routers.jubilee.entrypoints=websecure
       - traefik.http.routers.jubilee.tls.certresolver=letsencrypt
+      - traefik.http.routers.jubilee.tls.domains[0].main=${DOMAIN}
+      - traefik.http.routers.jubilee.tls.domains[0].sans=www.${DOMAIN}
       - traefik.http.services.jubilee.loadbalancer.server.port=3000
     depends_on:
       - traefik
