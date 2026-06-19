@@ -6,6 +6,7 @@ import Footer from './components/Footer';
 import Quote from './components/Quote';
 import Countdown from './components/Countdown';
 import ThemeToggle from './components/ThemeToggle';
+import ConfettiButton from './components/ConfettiButton';
 
 const Admin = lazy(() => import('./components/Admin'));
 
@@ -62,6 +63,7 @@ export default function App() {
       <Decor />
       
       <ThemeToggle />
+      <ConfettiButton />
       
       <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-8 md:px-16 py-8 md:py-20 flex flex-col gap-16 md:gap-32">
         <Hero />
